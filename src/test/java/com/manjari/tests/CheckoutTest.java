@@ -21,7 +21,9 @@ public class CheckoutTest extends BaseTest {
     private void jsType(String id, String text) {
         WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", el, text);
+        // Clear field first, type character by character to trigger input events
+        el.clear();
+        el.sendKeys(text);
     }
 
     @BeforeEach
