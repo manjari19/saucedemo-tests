@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Checkout Test Suite")
 public class CheckoutTest extends BaseTest {
 
-    private void jsClick(String id) {
-        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
+    private void jsClick(By locator) {
+        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el);
     }
@@ -28,21 +28,19 @@ public class CheckoutTest extends BaseTest {
     public void loginAddItemAndGoToCheckout() {
         driver.findElement(By.id("user-name")).sendKeys(VALID_USER);
         driver.findElement(By.id("password")).sendKeys(VALID_PASSWORD);
-        jsClick("login-button");
+        jsClick(By.id("login-button"));
         wait.until(ExpectedConditions.urlContains("inventory"));
-        wait.until(ExpectedConditions.elementToBeClickable(
-            By.className("btn_inventory"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
-            By.className("shopping_cart_link"))).click();
+        jsClick(By.className("btn_inventory"));
+        jsClick(By.className("shopping_cart_link"));
         wait.until(ExpectedConditions.urlContains("cart"));
-        jsClick("checkout");
+        jsClick(By.id("checkout"));
         wait.until(ExpectedConditions.urlContains("checkout-step-one"));
     }
 
     @Test
     @DisplayName("Empty checkout form should show validation error")
     public void testEmptyCheckoutForm() {
-        jsClick("continue");
+        jsClick(By.id("continue"));
         WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.cssSelector("[data-test='error']")));
         assertTrue(error.isDisplayed(),
@@ -55,7 +53,7 @@ public class CheckoutTest extends BaseTest {
         jsType("first-name", "Manjari");
         jsType("last-name", "Prasad");
         jsType("postal-code", "V3E 0A1");
-        jsClick("continue");
+        jsClick(By.id("continue"));
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
         assertTrue(driver.getCurrentUrl().contains("checkout-step-two"),
             "Should proceed to order summary page");
@@ -67,9 +65,9 @@ public class CheckoutTest extends BaseTest {
         jsType("first-name", "Manjari");
         jsType("last-name", "Prasad");
         jsType("postal-code", "V3E 0A1");
-        jsClick("continue");
+        jsClick(By.id("continue"));
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
-        jsClick("finish");
+        jsClick(By.id("finish"));
         wait.until(ExpectedConditions.urlContains("checkout-complete"));
         WebElement header = wait.until(ExpectedConditions.visibilityOfElementLocated(
             By.className("complete-header")));
