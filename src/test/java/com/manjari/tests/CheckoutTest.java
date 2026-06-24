@@ -14,7 +14,14 @@ public class CheckoutTest extends BaseTest {
 
     private void jsClick(String id) {
         WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el);
+    }
+
+    private void jsType(String id, String text) {
+        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1];", el, text);
     }
 
     @BeforeEach
@@ -45,10 +52,9 @@ public class CheckoutTest extends BaseTest {
     @Test
     @DisplayName("Valid checkout info should proceed to order summary")
     public void testValidCheckoutInfo() {
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-            By.id("first-name"))).sendKeys("Manjari");
-        driver.findElement(By.id("last-name")).sendKeys("Prasad");
-        driver.findElement(By.id("postal-code")).sendKeys("V3E 0A1");
+        jsType("first-name", "Manjari");
+        jsType("last-name", "Prasad");
+        jsType("postal-code", "V3E 0A1");
         jsClick("continue");
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
         assertTrue(driver.getCurrentUrl().contains("checkout-step-two"),
@@ -58,10 +64,9 @@ public class CheckoutTest extends BaseTest {
     @Test
     @DisplayName("Complete order should show confirmation message")
     public void testCompleteOrder() {
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-            By.id("first-name"))).sendKeys("Manjari");
-        driver.findElement(By.id("last-name")).sendKeys("Prasad");
-        driver.findElement(By.id("postal-code")).sendKeys("V3E 0A1");
+        jsType("first-name", "Manjari");
+        jsType("last-name", "Prasad");
+        jsType("postal-code", "V3E 0A1");
         jsClick("continue");
         wait.until(ExpectedConditions.urlContains("checkout-step-two"));
         jsClick("finish");
