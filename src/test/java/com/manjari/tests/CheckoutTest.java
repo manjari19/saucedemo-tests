@@ -19,11 +19,14 @@ public class CheckoutTest extends BaseTest {
     }
 
     private void jsType(String id, String text) {
-        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
+        WebElement el = wait.until(ExpectedConditions.elementToBeClickable(By.id(id)));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", el);
-        // Clear field first, type character by character to trigger input events
-        el.clear();
-        el.sendKeys(text);
+        ((JavascriptExecutor) driver).executeScript(
+            "var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;" +
+            "setter.call(arguments[0], arguments[1]);" +
+            "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
+            "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+            el, text);
     }
 
     @BeforeEach
